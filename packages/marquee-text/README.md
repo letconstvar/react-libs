@@ -3,6 +3,9 @@
 A lightweight React component for creating smooth, customizable marquee text effects.
 一个轻量级的 React 组件，用于创建流畅、可定制的跑马灯文本效果。
 
+## demo
+https://codesandbox.io/p/sandbox/95249p
+
 ## Installation / 安装
 
 ```bash
