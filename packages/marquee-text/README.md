@@ -7,20 +7,20 @@ A lightweight React component for creating smooth, customizable marquee text eff
 
 ```bash
 # Using pnpm / 使用 pnpm
-pnpm add @your-scope/marquee-text
+pnpm add @zhou96/marquee-text
 
 # Using npm / 使用 npm
-# npm install @your-scope/marquee-text
+# npm install @zhou96/marquee-text
 
 # Using yarn / 使用 yarn
-# yarn add @your-scope/marquee-text
+# yarn add @zhou96/marquee-text
 ```
 
 ## Usage / 使用
 
 ```tsx
-import { MarqueeText } from "@your-scope/marquee-text";
-import "@your-scope/marquee-text/dist/style.css";
+import { MarqueeText } from "@zhou96/marquee-text";
+import "@zhou96/marquee-text/dist/style.css";
 
 function App() {
   return (
