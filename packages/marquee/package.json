@@ -1,7 +1,7 @@
 {
   "name": "@zhou96/marquee",
   "private": false,
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "A React marquee component",
   "type": "module",
   "repository": {
@@ -44,5 +44,5 @@
   "author": "zhou",
   "license": "MIT",
   "email": "zhouzhu96@gmail.com",
-  "homepage": "https://github.com/letconstvar/react-libs/blob/main/packages/marquee-text/README.md"
+  "homepage": "https://github.com/letconstvar/react-libs/blob/main/packages/marquee/README.md"
 }
