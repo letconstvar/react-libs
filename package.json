@@ -16,6 +16,7 @@
   "license": "ISC",
   "dependencies": {
     "@zhou96/marquee-text": "workspace:*",
+    "@zhou96/marquee": "workspace:*",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

@@ -1,6 +1,6 @@
 import React from "react";
-import MarqueeText from "@zhou96/marquee-text";
-import "@zhou96/marquee-text/dist/style.css";
+import Marquee from "@zhou96/marquee";
+import "@zhou96/marquee/dist/style.css";
 
 function App() {
   return (
@@ -16,18 +16,20 @@ function App() {
         }}
       >
         <h2>示例组件：MarqueeText</h2>
-        <MarqueeText text="这是一个跑马灯文本组件，可以自动滚动显示长文本" />
-        <MarqueeText
-          text="这是一个跑马灯文本组件"
+        <Marquee>
+          <p>这是一个跑马灯文本组件</p>
+        </Marquee>
+        <Marquee speed={50} pauseOnHover={false}>
+          <p>这是一个自定义速度的跑马灯文本组件</p>
+        </Marquee>
+        <Marquee
+          overflowOnly={false}
           speed={50}
-          pauseOnHover={false}
-        />
-        <MarqueeText
-          text="这是一个跑马灯文本组件"
-          speed={50}
-          pauseOnHover={false}
+          pauseOnHover={true}
           direction="right"
-        />
+        >
+          <p>12345</p>
+        </Marquee>
       </div>
     </div>
   );
