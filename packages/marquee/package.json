@@ -1,11 +1,16 @@
 {
-  "name": "marquee-react",
+  "name": "@zhou96/marquee",
+  "private": false,
   "version": "0.0.1",
   "description": "A React marquee component",
   "type": "module",
+  "repository": {
+    "type": "github",
+    "url": "https://github.com/letconstvar/react-libs/tree/main/packages/marquee"
+  },
   "main": "dist/index.umd.js",
   "module": "dist/index.es.js",
-  "types": "dist/types/index.d.ts",
+  "types": "dist/src/index.d.ts",
   "files": [
     "dist"
   ],
@@ -30,10 +35,14 @@
   "keywords": [
     "react",
     "marquee",
+    "marquee-text",
     "text",
+    "react-marquee-text",
+    "marquee-text-component",
     "component"
   ],
   "author": "zhou",
   "license": "MIT",
-  "email": "zhouzhu96@gmail.com"
+  "email": "zhouzhu96@gmail.com",
+  "homepage": "https://github.com/letconstvar/react-libs/blob/main/packages/marquee-text/README.md"
 }

@@ -1,16 +1,18 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import styles from "./MarqueeText.module.css";
-import type { MarqueeTextProps } from "./types";
+import styles from "./marquee.module.css";
+import type { MarqueeProps } from "./types";
 
-export const Marquee: React.FC<MarqueeTextProps> = ({
+export const Marquee: React.FC<MarqueeProps> = ({
   children,
   className = "",
   style = {},
   speed = 20,
   pauseOnHover = true,
+  direction = "left",
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const textRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
   const [shouldAnimate, setShouldAnimate] = useState(false);
   const [animationDuration, setAnimationDuration] = useState(0);
   const [containerWidth, setContainerWidth] = useState(0);
@@ -20,11 +22,16 @@ export const Marquee: React.FC<MarqueeTextProps> = ({
     return isHovered && pauseOnHover;
   }, [isHovered, pauseOnHover]);
 
+  const animationClass = useMemo(() => {
+    if (!shouldAnimate) return "";
+    return direction === "right" ? styles.animateRight : styles.animate;
+  }, [shouldAnimate, direction]);
+
   useEffect(() => {
     const updateAnimation = () => {
-      if (containerRef.current && textRef.current) {
+      if (containerRef.current && scrollRef.current) {
         const containerWidth = containerRef.current.offsetWidth;
-        const textWidth = textRef.current.offsetWidth;
+        const textWidth = scrollRef.current.offsetWidth;
 
         if (textWidth > containerWidth) {
           const totalDistance = containerWidth + textWidth;
@@ -54,10 +61,8 @@ export const Marquee: React.FC<MarqueeTextProps> = ({
       onMouseLeave={() => setIsHovered(false)}
     >
       <div
-        ref={textRef}
-        className={`${styles.textContent} ${
-          shouldAnimate ? styles.animate : ""
-        }`}
+        ref={scrollRef}
+        className={`${styles.textContent} ${animationClass}`}
         style={{
           ...(shouldAnimate &&
             ({

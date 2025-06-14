@@ -8,7 +8,7 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, "index.ts"),
-      name: "MarqueeText",
+      name: "Marquee",
       fileName: (format) => `index.${format}.js`,
       formats: ["es", "umd"],
     },
