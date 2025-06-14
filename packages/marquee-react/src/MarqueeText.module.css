@@ -1,0 +1,24 @@
+.container {
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.textContent {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.textContent.animate {
+  animation: marquee var(--animation-duration, 10s) linear infinite;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(var(--container-width, 0px));
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
