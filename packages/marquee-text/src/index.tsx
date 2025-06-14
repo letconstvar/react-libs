@@ -8,6 +8,7 @@ export const MarqueeText: React.FC<MarqueeTextProps> = ({
   style = {},
   speed = 20,
   pauseOnHover = true,
+  direction = "left",
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
@@ -45,6 +46,11 @@ export const MarqueeText: React.FC<MarqueeTextProps> = ({
     return () => window.removeEventListener("resize", updateAnimation);
   }, [text, speed]);
 
+  const animationClass = useMemo(() => {
+    if (!shouldAnimate) return "";
+    return direction === "right" ? styles.animateRight : styles.animate;
+  }, [shouldAnimate, direction]);
+
   return (
     <div
       ref={containerRef}
@@ -55,9 +61,7 @@ export const MarqueeText: React.FC<MarqueeTextProps> = ({
     >
       <div
         ref={textRef}
-        className={`${styles.textContent} ${
-          shouldAnimate ? styles.animate : ""
-        }`}
+        className={`${styles.textContent} ${animationClass}`}
         style={{
           ...(shouldAnimate &&
             ({
