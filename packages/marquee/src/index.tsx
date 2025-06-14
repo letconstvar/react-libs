@@ -2,13 +2,14 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./marquee.module.css";
 import type { MarqueeProps } from "./types";
 
-export const Marquee: React.FC<MarqueeProps> = ({
+const Marquee: React.FC<MarqueeProps> = ({
   children,
   className = "",
   style = {},
   speed = 20,
   pauseOnHover = true,
   direction = "left",
+  overflowOnly = true,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -33,7 +34,10 @@ export const Marquee: React.FC<MarqueeProps> = ({
         const containerWidth = containerRef.current.offsetWidth;
         const textWidth = scrollRef.current.offsetWidth;
 
-        if (textWidth > containerWidth) {
+        // 根据 overflowOnly 参数决定是否需要滚动
+        const shouldScroll = overflowOnly ? textWidth > containerWidth : true;
+
+        if (shouldScroll) {
           const totalDistance = containerWidth + textWidth;
           const duration = totalDistance / speed;
 
@@ -50,7 +54,7 @@ export const Marquee: React.FC<MarqueeProps> = ({
 
     window.addEventListener("resize", updateAnimation);
     return () => window.removeEventListener("resize", updateAnimation);
-  }, [speed]);
+  }, [speed, overflowOnly]);
 
   return (
     <div

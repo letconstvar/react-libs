@@ -14,11 +14,24 @@
   animation: marquee var(--animation-duration, 10s) linear infinite;
 }
 
+.textContent.animateRight {
+  animation: marqueeRight var(--animation-duration, 10s) linear infinite;
+}
+
 @keyframes marquee {
   0% {
     transform: translateX(var(--container-width, 0px));
   }
   100% {
     transform: translateX(-100%);
+  }
+}
+
+@keyframes marqueeRight {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(var(--container-width, 0px));
   }
 }
