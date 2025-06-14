@@ -1,6 +1,6 @@
 import React from "react";
-import MarqueeText from "react-marquee-text";
-import "react-marquee-text/dist/style.css";
+import MarqueeText from "@zhou96/marquee-text";
+import "@zhou96/marquee-text/dist/style.css";
 
 function App() {
   return (
@@ -21,6 +21,12 @@ function App() {
           text="这是一个跑马灯文本组件"
           speed={50}
           pauseOnHover={false}
+        />
+        <MarqueeText
+          text="这是一个跑马灯文本组件"
+          speed={50}
+          pauseOnHover={false}
+          direction="right"
         />
       </div>
     </div>
