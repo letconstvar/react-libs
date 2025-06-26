@@ -1,389 +1,426 @@
-# @zhou96/marquee
+# @zhou96/countdown-worker
 
-[English](#english) | [中文](#chinese)
+一个基于 Web Worker 的高性能倒计时库，支持暂停、恢复、重启等功能。<br>
+A high-performance countdown library based on Web Worker, supporting pause, resume, restart and other features.
 
-## DEMO
-https://codesandbox.io/p/sandbox/fw467c
+## 🚀 特性 Features
+
+- ✅ **高性能** - 基于 Web Worker，不阻塞主线程 / Based on Web Worker, non-blocking main thread
+- ✅ **状态管理** - 完整的状态管理系统 / Complete state management system
+- ✅ **灵活控制** - 支持暂停、恢复、重启 / Support pause, resume, restart
+- ✅ **类型安全** - 完整的 TypeScript 支持 / Full TypeScript support
+- ✅ **资源管理** - 自动资源清理 / Automatic resource cleanup
+- ✅ **高精度** - 毫秒级精度控制 / Millisecond precision control
+- ✅ **事件丰富** - 丰富的回调事件 / Rich callback events
 
 ---
 
-## English
+## 📦 安装 Installation
 
-A lightweight, high-performance React marquee component with customizable scroll direction, speed control, hover pause, and more.
+## 📦 安装 Installation
 
-### Features
+```bash
+npm install @zhou96/countdown-worker
+# or
+yarn add @zhou96/countdown-worker
+# or
+pnpm add @zhou96/countdown-worker
+```
 
-- 🚀 **Lightweight**: Zero dependencies, small bundle size
-- 📱 **Responsive**: Automatically adapts to container width changes
-- 🎯 **Smart Scrolling**: Supports overflow detection, scrolls only when needed
-- ⏸️ **Hover Pause**: Can pause scrolling on mouse hover
-- 🎨 **Highly Customizable**: Supports custom styles, speed, and direction
-- 🔄 **Bidirectional**: Supports left-to-right or right-to-left scrolling
-- 💪 **TypeScript Support**: Complete type definitions
+---
+
+## 🔧 中文文档 Chinese Documentation
+
+### 🎯 快速开始 Quick Start
+
+```javascript
+import { CountdownWorker } from '@zhou96/countdown-worker'
+
+const countdown = new CountdownWorker({
+  duration: 60000, // 60秒倒计时
+  interval: 1000, // 每秒更新一次
+  onTick: remainingTime => {
+    console.log(`剩余时间: ${Math.ceil(remainingTime / 1000)}秒`)
+  },
+  onDone: () => {
+    console.log('倒计时完成！')
+  },
+})
+
+countdown.start()
+```
+
+### ⚙️ 配置选项 Configuration Options
+
+```typescript
+interface CountdownOptions {
+  duration: number // 倒计时总时长（毫秒）
+  interval?: number // 更新间隔（毫秒），默认 1000
+  onTick?: (remainingTime: number) => void // 每次更新回调
+  onDone: () => void // 完成回调
+  onStarted?: () => void // 开始回调
+  onPaused?: (remainingTime: number) => void // 暂停回调
+  onResumed?: () => void // 恢复回调
+  onStopped?: () => void // 停止回调
+}
+```
+
+### 📋 API 方法 API Methods
+
+| 方法                 | 参数                   | 返回值   | 描述         |
+| -------------------- | ---------------------- | -------- | ------------ |
+| `start()`            | -                      | `void`   | 开始倒计时   |
+| `pause()`            | -                      | `void`   | 暂停倒计时   |
+| `resume()`           | -                      | `void`   | 恢复倒计时   |
+| `stop()`             | -                      | `void`   | 停止倒计时   |
+| `restart()`          | `newDuration?: number` | `void`   | 重启倒计时   |
+| `getRemainingTime()` | -                      | `number` | 获取剩余时间 |
+| `getStatus()`        | -                      | `string` | 获取当前状态 |
+| `destroy()`          | -                      | `void`   | 销毁倒计时器 |
+
+#### 🎮 方法详解
+
+**`start()`**
+开始倒计时。如果已在运行或暂停状态，会输出警告并忽略操作。
+
+**`pause()`**
+暂停倒计时，保持当前剩余时间。只有在运行状态下才能暂停。
+
+**`resume()`**
+从暂停点恢复倒计时。只有在暂停状态下才能恢复。
+
+**`stop()`**
+停止倒计时并重置到初始状态。
+
+**`restart(newDuration?: number)`**
+重新开始倒计时。可选择传入新的时长（毫秒）。
+
+**`getRemainingTime(): number`**
+获取当前剩余时间（毫秒）。
+
+**`getStatus(): 'idle' | 'running' | 'paused' | 'stopped' | 'destroyed'`**
+获取当前倒计时状态。
+
+**`destroy()`**
+销毁倒计时器，释放所有资源。销毁后实例不可再用。
+
+### 💡 完整示例 Complete Example
+
+```javascript
+import { CountdownWorker } from '@zhou96/countdown-worker'
+
+const countdown = new CountdownWorker({
+  duration: 30000, // 30秒倒计时
+  interval: 1000, // 每秒更新
+
+  onStarted: () => {
+    console.log('倒计时开始')
+    document.getElementById('status').textContent = '运行中'
+  },
+
+  onTick: remainingTime => {
+    const seconds = Math.ceil(remainingTime / 1000)
+    document.getElementById('timer').textContent = `${seconds}秒`
+  },
+
+  onPaused: remainingTime => {
+    console.log(`倒计时暂停，剩余 ${remainingTime}ms`)
+    document.getElementById('status').textContent = '已暂停'
+  },
+
+  onResumed: () => {
+    console.log('倒计时恢复')
+    document.getElementById('status').textContent = '运行中'
+  },
+
+  onStopped: () => {
+    console.log('倒计时停止')
+    document.getElementById('status').textContent = '已停止'
+  },
+
+  onDone: () => {
+    console.log('倒计时完成！')
+    document.getElementById('status').textContent = '完成'
+    // 自动清理资源
+    countdown.destroy()
+  },
+})
+
+// 控制按钮
+document.getElementById('start').onclick = () => countdown.start()
+document.getElementById('pause').onclick = () => countdown.pause()
+document.getElementById('resume').onclick = () => countdown.resume()
+document.getElementById('stop').onclick = () => countdown.stop()
+document.getElementById('restart').onclick = () => countdown.restart(60000) // 重启为60秒
+```
+
+### 💎 最佳实践 Best Practices
+
+> **💡 提示**
+>
+> 1. **及时销毁**: 当不再需要倒计时器时，调用 `destroy()` 方法释放资源
+> 2. **状态检查**: 在调用方法前可以通过 `getStatus()` 检查当前状态
+> 3. **错误处理**: 监听控制台警告信息，避免在错误状态下调用方法
+> 4. **内存管理**: 在单页应用中，页面卸载时确保销毁所有倒计时实例
+
+---
+
+## 🌍 English Documentation
 
 ### Installation
 
 ```bash
-npm install @zhou96/marquee
+npm install @zhou96/countdown-worker
 ```
 
-```bash
-yarn add @zhou96/marquee
+### 🎯 Quick Start
+
+```javascript
+import { CountdownWorker } from '@zhou96/countdown-worker'
+
+const countdown = new CountdownWorker({
+  duration: 60000, // 60 seconds countdown
+  interval: 1000, // Update every second
+  onTick: remainingTime => {
+    console.log(`Remaining: ${Math.ceil(remainingTime / 1000)} seconds`)
+  },
+  onDone: () => {
+    console.log('Countdown finished!')
+  },
+})
+
+countdown.start()
 ```
 
-```bash
-pnpm add @zhou96/marquee
-```
+### ⚙️ Configuration Options
 
-### Basic Usage
-
-```tsx
-import Marquee from '@zhou96/marquee';
-import "@zhou96/marquee/dist/style.css";
-
-function App() {
-  return (
-    <div style={{ width: '300px' }}>
-      <Marquee>
-        This is a long text content that will automatically scroll when it exceeds the container width
-      </Marquee>
-    </div>
-  );
+```typescript
+interface CountdownOptions {
+  duration: number // Total countdown duration (milliseconds)
+  interval?: number // Update interval (milliseconds), default 1000
+  onTick?: (remainingTime: number) => void // Tick callback
+  onDone: () => void // Done callback
+  onStarted?: () => void // Started callback
+  onPaused?: (remainingTime: number) => void // Paused callback
+  onResumed?: () => void // Resumed callback
+  onStopped?: () => void // Stopped callback
 }
 ```
 
-### API Props
+### 📋 API Methods
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `React.ReactNode` | - | Content to be scrolled |
-| `className` | `string` | `""` | Custom CSS class name |
-| `style` | `React.CSSProperties` | `{}` | Custom inline styles |
-| `speed` | `number` | `20` | Scroll speed (pixels/second) |
-| `pauseOnHover` | `boolean` | `true` | Whether to pause scrolling on mouse hover |
-| `direction` | `"left" \| "right"` | `"left"` | Scroll direction |
-| `overflowOnly` | `boolean` | `true` | Whether to scroll only when content overflows |
+| Method               | Parameters             | Return   | Description        |
+| -------------------- | ---------------------- | -------- | ------------------ |
+| `start()`            | -                      | `void`   | Start countdown    |
+| `pause()`            | -                      | `void`   | Pause countdown    |
+| `resume()`           | -                      | `void`   | Resume countdown   |
+| `stop()`             | -                      | `void`   | Stop countdown     |
+| `restart()`          | `newDuration?: number` | `void`   | Restart countdown  |
+| `getRemainingTime()` | -                      | `number` | Get remaining time |
+| `getStatus()`        | -                      | `string` | Get current status |
+| `destroy()`          | -                      | `void`   | Destroy countdown  |
 
-### Examples
+#### 🎮 Method Details
 
-#### Basic Scrolling
+**`start()`**
+Start the countdown. If already running or paused, a warning will be logged and the operation will be ignored.
 
-```tsx
-<Marquee>
-  This is a marquee message that scrolls from right to left
-</Marquee>
+**`pause()`**
+Pause the countdown while maintaining the current remaining time. Can only pause when running.
+
+**`resume()`**
+Resume the countdown from the paused point. Can only resume when paused.
+
+**`stop()`**
+Stop the countdown and reset to initial state.
+
+**`restart(newDuration?: number)`**
+Restart the countdown. Optionally pass a new duration (milliseconds).
+
+**`getRemainingTime(): number`**
+Get the current remaining time (milliseconds).
+
+**`getStatus(): 'idle' | 'running' | 'paused' | 'stopped' | 'destroyed'`**
+Get the current countdown status.
+
+**`destroy()`**
+Destroy the countdown timer and release all resources. The instance cannot be used after destruction.
+
+### 💡 Complete Example
+
+```javascript
+import { CountdownWorker } from '@zhou96/countdown-worker'
+
+const countdown = new CountdownWorker({
+  duration: 30000, // 30 seconds countdown
+  interval: 1000, // Update every second
+
+  onStarted: () => {
+    console.log('Countdown started')
+    document.getElementById('status').textContent = 'Running'
+  },
+
+  onTick: remainingTime => {
+    const seconds = Math.ceil(remainingTime / 1000)
+    document.getElementById('timer').textContent = `${seconds}s`
+  },
+
+  onPaused: remainingTime => {
+    console.log(`Countdown paused, ${remainingTime}ms remaining`)
+    document.getElementById('status').textContent = 'Paused'
+  },
+
+  onResumed: () => {
+    console.log('Countdown resumed')
+    document.getElementById('status').textContent = 'Running'
+  },
+
+  onStopped: () => {
+    console.log('Countdown stopped')
+    document.getElementById('status').textContent = 'Stopped'
+  },
+
+  onDone: () => {
+    console.log('Countdown finished!')
+    document.getElementById('status').textContent = 'Finished'
+    // Auto cleanup
+    countdown.destroy()
+  },
+})
+
+// Control buttons
+document.getElementById('start').onclick = () => countdown.start()
+document.getElementById('pause').onclick = () => countdown.pause()
+document.getElementById('resume').onclick = () => countdown.resume()
+document.getElementById('stop').onclick = () => countdown.stop()
+document.getElementById('restart').onclick = () => countdown.restart(60000) // Restart with 60s
 ```
 
-#### Custom Speed
+### 💎 Best Practices
 
-```tsx
-<Marquee speed={50}>
-  Fast scrolling text content
-</Marquee>
-
-<Marquee speed={10}>
-  Slow scrolling text content
-</Marquee>
-```
-
-#### Change Scroll Direction
-
-```tsx
-<Marquee direction="right">
-  Content scrolling from left to right
-</Marquee>
-```
-
-#### Disable Hover Pause
-
-```tsx
-<Marquee pauseOnHover={false}>
-  Content that won't pause on mouse hover
-</Marquee>
-```
-
-#### Force Scrolling (Regardless of Overflow)
-
-```tsx
-<Marquee overflowOnly={false}>
-  Short text will also scroll
-</Marquee>
-```
-
-#### Custom Styling
-
-```tsx
-<Marquee 
-  className="custom-marquee"
-  style={{ 
-    backgroundColor: '#f0f0f0', 
-    padding: '10px',
-    borderRadius: '4px'
-  }}
+> **💡 Tips**
 >
-  Marquee with custom styling
-</Marquee>
-```
-
-### Advanced Usage
-
-#### News Ticker
-
-```tsx
-function NewsMarquee() {
-  const news = [
-    "Breaking: Tech company releases new product",
-    "Economy: Stock market rises 2.5% today",
-    "Sports: World Cup finals tonight"
-  ];
-
-  return (
-    <div className="news-container">
-      <span className="news-label">Latest News:</span>
-      <Marquee speed={30} className="news-marquee">
-        {news.join(' • ')}
-      </Marquee>
-    </div>
-  );
-}
-```
-
-### Compatibility
-
-- React 16.8+
-- Modern browsers (supporting CSS animations and custom properties)
-- IE 11+ (with polyfills)
+> 1. **Timely Destruction**: Call `destroy()` method to release resources when countdown is no longer needed
+> 2. **Status Checking**: Check current status with `getStatus()` before calling methods
+> 3. **Error Handling**: Monitor console warnings to avoid calling methods in wrong states
+> 4. **Memory Management**: Ensure all countdown instances are destroyed when pages are unloaded in SPAs
 
 ---
 
-## Chinese
+## 📖 更多示例 More Examples
 
-一个轻量级、高性能的 React 跑马灯组件，支持自定义滚动方向、速度控制、悬停暂停等功能。
-
-### 特性
-
-- 🚀 **轻量级**：零依赖，小体积
-- 📱 **响应式**：自动适配容器宽度变化
-- 🎯 **智能滚动**：支持溢出检测，只在需要时滚动
-- ⏸️ **悬停暂停**：鼠标悬停时可暂停滚动
-- 🎨 **高度可定制**：支持自定义样式、速度、方向
-- 🔄 **双向滚动**：支持从左到右或从右到左滚动
-- 💪 **TypeScript 支持**：完整的类型定义
-
-### 安装
-
-```bash
-npm install @zhou96/marquee
-```
-
-```bash
-yarn add @zhou96/marquee
-```
-
-```bash
-pnpm add @zhou96/marquee
-```
-
-### 基础用法
+### React 组件示例 React Component Example
 
 ```tsx
-import Marquee from '@zhou96/marquee';
-import "@zhou96/marquee/dist/style.css";
+import React, { useState, useEffect } from 'react'
+import { CountdownWorker } from '@zhou96/countdown-worker'
 
-function App() {
-  return (
-    <div style={{ width: '300px' }}>
-      <Marquee>
-        这是一个很长的文本内容，当内容超出容器宽度时会自动滚动显示
-      </Marquee>
-    </div>
-  );
-}
-```
+const CountdownComponent: React.FC = () => {
+  const [countdown, setCountdown] = useState<CountdownWorker | null>(null)
+  const [remainingTime, setRemainingTime] = useState(0)
+  const [status, setStatus] = useState<string>('idle')
 
-### API 参数
+  useEffect(() => {
+    const worker = new CountdownWorker({
+      duration: 60000, // 60 seconds
+      interval: 1000,
+      onTick: time => setRemainingTime(time),
+      onDone: () => setStatus('completed'),
+      onStarted: () => setStatus('running'),
+      onPaused: time => setStatus('paused'),
+      onResumed: () => setStatus('running'),
+      onStopped: () => setStatus('stopped'),
+    })
 
-| 参数 | 类型 | 默认值 | 描述 |
-|------|------|--------|------|
-| `children` | `React.ReactNode` | - | 要滚动显示的内容 |
-| `className` | `string` | `""` | 自定义 CSS 类名 |
-| `style` | `React.CSSProperties` | `{}` | 自定义内联样式 |
-| `speed` | `number` | `20` | 滚动速度（像素/秒） |
-| `pauseOnHover` | `boolean` | `true` | 鼠标悬停时是否暂停滚动 |
-| `direction` | `"left" \| "right"` | `"left"` | 滚动方向 |
-| `overflowOnly` | `boolean` | `true` | 是否只在内容溢出时滚动 |
+    setCountdown(worker)
 
-### 使用示例
+    return () => {
+      worker.destroy()
+    }
+  }, [])
 
-#### 基础滚动
-
-```tsx
-<Marquee>
-  这是一条跑马灯消息，会从右到左滚动显示
-</Marquee>
-```
-
-#### 自定义速度
-
-```tsx
-<Marquee speed={50}>
-  快速滚动的文本内容
-</Marquee>
-
-<Marquee speed={10}>
-  慢速滚动的文本内容
-</Marquee>
-```
-
-#### 改变滚动方向
-
-```tsx
-<Marquee direction="right">
-  从左到右滚动的内容
-</Marquee>
-```
-
-#### 禁用悬停暂停
-
-```tsx
-<Marquee pauseOnHover={false}>
-  鼠标悬停时不会暂停的内容
-</Marquee>
-```
-
-#### 强制滚动（无论是否溢出）
-
-```tsx
-<Marquee overflowOnly={false}>
-  短文本也会滚动
-</Marquee>
-```
-
-#### 自定义样式
-
-```tsx
-<Marquee 
-  className="custom-marquee"
-  style={{ 
-    backgroundColor: '#f0f0f0', 
-    padding: '10px',
-    borderRadius: '4px'
-  }}
->
-  带有自定义样式的跑马灯
-</Marquee>
-```
-
-### 高级用法
-
-#### 新闻滚动条
-
-```tsx
-function NewsMarquee() {
-  const news = [
-    "突发：科技公司发布新产品",
-    "经济：股市今日上涨 2.5%",
-    "体育：世界杯决赛今晚开始"
-  ];
+  const formatTime = (time: number) => {
+    const seconds = Math.ceil(time / 1000)
+    return `${Math.floor(seconds / 60)}:${(seconds % 60).toString().padStart(2, '0')}`
+  }
 
   return (
-    <div className="news-container">
-      <span className="news-label">最新消息：</span>
-      <Marquee speed={30} className="news-marquee">
-        {news.join(' • ')}
-      </Marquee>
-    </div>
-  );
-}
-```
-
-#### 产品展示
-
-```tsx
-function ProductShowcase() {
-  return (
-    <Marquee 
-      speed={25}
-      direction="right"
-      pauseOnHover={true}
-      className="product-marquee"
-    >
-      <div className="product-list">
-        <img src="/product1.jpg" alt="Product 1" />
-        <img src="/product2.jpg" alt="Product 2" />
-        <img src="/product3.jpg" alt="Product 3" />
+    <div className="countdown-container">
+      <h2>倒计时器 Countdown Timer</h2>
+      <div className="timer-display">
+        <span className="time">{formatTime(remainingTime)}</span>
+        <span className="status">状态 Status: {status}</span>
       </div>
-    </Marquee>
-  );
+      <div className="controls">
+        <button onClick={() => countdown?.start()}>开始 Start</button>
+        <button onClick={() => countdown?.pause()}>暂停 Pause</button>
+        <button onClick={() => countdown?.resume()}>恢复 Resume</button>
+        <button onClick={() => countdown?.stop()}>停止 Stop</button>
+        <button onClick={() => countdown?.restart(30000)}>重启30秒 Restart 30s</button>
+      </div>
+    </div>
+  )
 }
 ```
 
-### 样式定制
+### Vue 组件示例 Vue Component Example
 
-组件使用 CSS Modules，你可以通过以下方式自定义样式：
+```vue
+<template>
+  <div class="countdown-container">
+    <h2>倒计时器 Countdown Timer</h2>
+    <div class="timer-display">
+      <span class="time">{{ formatTime(remainingTime) }}</span>
+      <span class="status">状态 Status: {{ status }}</span>
+    </div>
+    <div class="controls">
+      <button @click="start">开始 Start</button>
+      <button @click="pause">暂停 Pause</button>
+      <button @click="resume">恢复 Resume</button>
+      <button @click="stop">停止 Stop</button>
+      <button @click="restart">重启30秒 Restart 30s</button>
+    </div>
+  </div>
+</template>
 
-```css
-/* 自定义容器样式 */
-.custom-marquee {
-  background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
-  color: white;
-  padding: 12px 0;
-  font-weight: bold;
+<script setup lang="ts">
+import { ref, onMounted, onUnmounted } from 'vue'
+import { CountdownWorker } from '@zhou96/countdown-worker'
+
+const countdown = ref<CountdownWorker | null>(null)
+const remainingTime = ref(0)
+const status = ref('idle')
+
+const formatTime = (time: number) => {
+  const seconds = Math.ceil(time / 1000)
+  return `${Math.floor(seconds / 60)}:${(seconds % 60).toString().padStart(2, '0')}`
 }
 
-/* 自定义文本内容样式 */
-.custom-marquee .textContent {
-  font-size: 18px;
-  letter-spacing: 1px;
-}
+const start = () => countdown.value?.start()
+const pause = () => countdown.value?.pause()
+const resume = () => countdown.value?.resume()
+const stop = () => countdown.value?.stop()
+const restart = () => countdown.value?.restart(30000)
+
+onMounted(() => {
+  countdown.value = new CountdownWorker({
+    duration: 60000,
+    interval: 1000,
+    onTick: time => (remainingTime.value = time),
+    onDone: () => (status.value = 'completed'),
+    onStarted: () => (status.value = 'running'),
+    onPaused: time => (status.value = 'paused'),
+    onResumed: () => (status.value = 'running'),
+    onStopped: () => (status.value = 'stopped'),
+  })
+})
+
+onUnmounted(() => {
+  countdown.value?.destroy()
+})
+</script>
 ```
 
-### 性能优化
+---
 
-- 组件使用 `useMemo` 和 `useCallback` 优化渲染性能
-- 自动检测内容是否溢出，避免不必要的动画
-- 响应式设计，窗口大小变化时自动重新计算
-- CSS 动画实现，性能优于 JavaScript 动画
-
-### 兼容性
-
-- React 16.8+
-- 现代浏览器（支持 CSS 动画和自定义属性）
-- IE 11+（需要 polyfill）
-
-### 故障排除
-
-#### 文本不滚动
-
-1. 检查容器是否有固定宽度
-2. 确认文本内容超出了容器宽度
-3. 如果希望短文本也滚动，设置 `overflowOnly={false}`
-
-#### 滚动太快或太慢
-
-调整 `speed` 参数的值：
-- 增大数值：滚动更快
-- 减小数值：滚动更慢
-
-#### 动画不流畅
-
-1. 确保没有过多的 DOM 操作影响性能
-2. 检查 CSS 样式是否有冲突
-3. 考虑使用 `will-change: transform` 优化动画性能
-
-### 贡献
-
-欢迎提交 Issue 和 Pull Request！
-
-### 许可证
-
-MIT License
-
-### 更新日志
-
-#### v1.0.0
-- 初始版本发布
-- 支持基础滚动功能
-- 支持自定义方向、速度、悬停暂停
-- 添加 `overflowOnly` 参数
-- 完整的 TypeScript 支持
+MIT

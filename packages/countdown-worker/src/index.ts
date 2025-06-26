@@ -1,15 +1,40 @@
-// countdown-worker.ts
-interface CountdownOptions {
-  duration: number // 倒计时总时长 (毫秒)
-  onDone: () => void // 倒计时完成回调
-  onTick?: (remainingTime: number) => void // 每秒更新回调 (可选)
-  onStarted?: () => void // 倒计时开始回调
-  onPaused?: (remainingTime: number) => void // 倒计时暂停回调
-  onResumed?: () => void // 倒计时恢复回调
-  onStopped?: () => void // 倒计时停止回调
-  interval?: number // 计时器更新频率 (毫秒，默认为 1000)
-}
+import { CountdownOptions } from './types'
+// @ts-ignore
+import workerCode from './worker.js?raw'
 
+/**
+ * CountdownWorker
+ * 倒计时工作线程
+ * 使用 Worker 线程进行倒计时
+ * @param {CountdownOptions} options - 倒计时选项
+ * @returns {CountdownWorker}
+ * @example
+ * const worker = new CountdownWorker({
+ *   duration: 3000, // 倒计时时长为 3 秒
+ *   onDone: () => {
+ *     console.log('倒计时完成')
+ *     worker.stop() // 倒计时完成后停止
+ *     worker.destroy() // 倒计时完成后销毁
+ *   },
+ *   onTick: (remainingTime) => {
+ *     console.log('倒计时剩余时间:', remainingTime)
+ *   },
+ *   onStarted: () => {
+ *     console.log('倒计时开始')
+ *   },
+ *   onPaused: (remainingTime) => {
+ *     console.log('倒计时暂停，剩余时间:', remainingTime)
+ *   },
+ *   onResumed: () => {
+ *     console.log('倒计时恢复')
+ *   },
+ *   onStopped: () => {
+ *     console.log('倒计时停止')
+ *   },
+ *   interval: 1000 // 每秒更新一次
+ * });
+ * worker.start() // 开始倒计时
+ */
 export class CountdownWorker {
   private worker: Worker | null = null
   private options: CountdownOptions
@@ -25,7 +50,8 @@ export class CountdownWorker {
     if (this.worker) {
       this.worker.terminate() // 确保旧的 worker 被销毁
     }
-    this.worker = new Worker(new URL('./worker.ts', import.meta.url), { type: 'module' })
+    const blob = new Blob([workerCode], { type: 'text/javascript' })
+    this.worker = new Worker(URL.createObjectURL(blob))
 
     this.worker.onmessage = (e: MessageEvent) => {
       const { type, payload } = e.data

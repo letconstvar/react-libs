@@ -1,9 +1,9 @@
-let timer: number | undefined
-let duration: number = 0 // 倒计时总时长 (毫秒)
-let remainingTime: number = 0 // 剩余时间 (毫秒)
-let startTime: number = 0 // 倒计时开始的时间戳
+let timer
+let duration = 0 // 倒计时总时长 (毫秒)
+let remainingTime = 0 // 剩余时间 (毫秒)
+let startTime = 0 // 倒计时开始的时间戳
 
-self.onmessage = (e: MessageEvent) => {
+self.onmessage = e => {
   const { type, payload } = e.data
 
   switch (type) {
@@ -14,7 +14,7 @@ self.onmessage = (e: MessageEvent) => {
       if (timer) {
         clearInterval(timer)
       }
-      timer = self.setInterval(() => {
+      timer = setInterval(() => {
         const elapsedTime = Date.now() - startTime
         remainingTime = duration - elapsedTime
 
@@ -43,7 +43,7 @@ self.onmessage = (e: MessageEvent) => {
         // 只有在有剩余时间且未计时时才恢复
         duration = remainingTime // 将剩余时间作为新的总时长
         startTime = Date.now()
-        timer = self.setInterval(() => {
+        timer = setInterval(() => {
           const elapsedTime = Date.now() - startTime
           remainingTime = duration - elapsedTime
 
